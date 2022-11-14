@@ -1,9 +1,25 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const port = 8000;
 
+// Connect with database
+require("./config/mongoose");
+
+// reads only form data not the params
+app.use(express.urlencoded({ extended: true }));
+
+// When the request is coming in, the cookies needs to be parsed
+app.use(cookieParser());
+
+// Set Path of static files folder(asset)
+app.use(express.static("assets")); // now use relative path for static file(/css/layout.css, ...). eg in layout.ejs
+
 app.use(expressLayouts);
+// extract style and scripts from sub pages into the layout
+app.set("layout extractStyles", true);
+app.set("layout extractScripts", true);
 
 // use express router
 // For any route '/' or '/...'
