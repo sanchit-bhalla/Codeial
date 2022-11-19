@@ -1,17 +1,27 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
+// const cookieParser = require("cookie-parser"); // no need if we use express-session
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const port = 8000;
 
 // Connect with database
-require("./config/mongoose");
+const db = require("./config/mongoose");
+
+// used for session cookie
+const session = require("express-session");
+const passport = require("passport");
+const passportLocal = require("./config/passport-local-strategy");
+
+// Right now whenever server restarts, our session cookie gets reset. This is bad bcz whenever we deploy some new code to the production server, all the users gets logged out.
+// Solution :  Keep persistent storage which keeps our cookies stored in the server.
+// For this we will be using libraray called connect-mongo.
+const MongoStore = require("connect-mongo");
 
 // reads only form data not the params
 app.use(express.urlencoded({ extended: true }));
 
 // When the request is coming in, the cookies needs to be parsed
-app.use(cookieParser());
+// app.use(cookieParser()); // no need if we use express-session
 
 // Set Path of static files folder(asset)
 app.use(express.static("assets")); // now use relative path for static file(/css/layout.css, ...). eg in layout.ejs
@@ -21,14 +31,36 @@ app.use(expressLayouts);
 app.set("layout extractStyles", true);
 app.set("layout extractScripts", true);
 
+// setup view engine
+app.set("view engine", "ejs");
+app.set("views", "./views");
+
+app.use(
+  session({
+    name: "codeial",
+    // TODO: change the secret before deployment in the production
+    secret: "blahsomething",
+    saveUninitialized: false, // means if session is not established i.e user is not logged in or identity is not established, in that case we don't want to store extra data in the session cookie
+    resave: false, // when identity is established and some session data is present, we don't want to rewrite it if it is not changed
+    cookie: {
+      maxAge: 1000 * 60 * 100, // Time(in milliseconds) after which session expires
+    },
+    store: MongoStore.create({
+      client: db.getClient(),
+      autoRemove: "disabled",
+    }),
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(passport.setAuthenticatedUser);
+
 // use express router
 // For any route '/' or '/...'
 // using middleware to access this route before the server starts - ?
 app.use("/", require("./routes")); // or require('/routes/index)
-
-// setup view engine
-app.set("view engine", "ejs");
-app.set("views", "./views");
 
 app.listen(port, function (err) {
   if (err) {

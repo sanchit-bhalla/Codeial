@@ -9,6 +9,12 @@ module.exports.profile = function (req, res) {
 
 // Render the Sign Up page
 module.exports.signUp = function (req, res) {
+  // If user is authenticated(logged in) no need of sign up again. So redirect the user to profile page
+  if (req.isAuthenticated()) {
+    // isAuthenticated() is added by passport and is available globally. So we can use it in controllers also.
+    return res.redirect("/users/profile");
+  }
+
   return res.render("user_sign_up", {
     title: "Codeial | Sign Up",
   });
@@ -16,6 +22,11 @@ module.exports.signUp = function (req, res) {
 
 // Render the Sign In page
 module.exports.signIn = function (req, res) {
+  if (req.isAuthenticated()) {
+    // If user is authenticated(already Signed In) no need of showing sign in page again. So redirect the user to the profile page
+    return res.redirect("/users/profile");
+  }
+
   return res.render("user_sign_in", {
     title: "Codeial | Sign In",
   });
@@ -55,5 +66,19 @@ module.exports.create = function (req, res) {
 
 // sign in and create a session for the user
 module.exports.createSession = function (req, res) {
-  // TODO later
+  // when passport js authenticate the user, the control comes here and we will redirect user to the homepage
+  return res.redirect("/");
+};
+
+// Sign Out
+module.exports.destroySession = function (req, res) {
+  // This function is provided by passportJs.
+  req.logout(function (err) {
+    if (err) {
+      console.log("Error while logging out :(");
+      return res.redirect("back");
+    }
+
+    return res.redirect("/"); // redirect to homepage
+  });
 };
