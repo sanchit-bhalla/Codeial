@@ -3,19 +3,30 @@ const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const port = 8000;
-
 // Connect with database
 const db = require("./config/mongoose");
-
 // used for session cookie
 const session = require("express-session");
 const passport = require("passport");
 const passportLocal = require("./config/passport-local-strategy");
-
 // Right now whenever server restarts, our session cookie gets reset. This is bad bcz whenever we deploy some new code to the production server, all the users gets logged out.
 // Solution :  Keep persistent storage which keeps our cookies stored in the server.
 // For this we will be using libraray called connect-mongo.
 const MongoStore = require("connect-mongo");
+const sassMiddleware = require("node-sass-middleware");
+
+// It doesn't compile code when we run server. It gets compiled when the page is loaded. i.e if we open profile page, then user_profile.scss will gets compiled. This thing makes it slow. But on production we need to send compiled files beforehand
+app.use(
+  sassMiddleware({
+    /* Options */
+    src: "./assets/scss",
+    dest: "./assets/css",
+    debug: true,
+    outputStyle: "extended", // we want output to be in multiple lines i.e(in readable form)
+    prefix: "/css", // It will tell the sass middleware that any request file will always be prefixed with <prefix> and this prefix should be ignored.
+    // e.g <link rel="stylesheets" href="prefix/layout.css"/>
+  })
+);
 
 // reads only form data not the params
 app.use(express.urlencoded({ extended: true }));
