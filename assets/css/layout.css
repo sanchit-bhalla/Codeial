@@ -1,2 +1,79 @@
+:root {
+  --clr-nav-bg: #343a40;
+  --clr-primary: #007bff;
+  --clr-success: #28a745;
+  --clr-danger: #dc3545;
+  --clr-white: #fff;
+  --clr-dark1: #20232a;
+  --clr-dark2: #33373e;
+  --c1: #333;
+  --c2: #ccc;
+  --c3: gray;
+  --fw-s: 300;
+  --fw-m: 500;
+  --fw-b: 800;
+  --fs-s: clamp(0.88rem, calc(0.81rem + 0.34vw), 1.13rem);
+  --fs-n: clamp(1rem, calc(0.86rem + 0.68vw), 1.5rem);
+  --fs-l: clamp(1.25rem, calc(1.05rem + 1.02vw), 2rem);
+  --bs: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  font-family: sans-serif; }
+
 body {
-  margin: 0; }
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+  font-weight: var(--fw-m);
+  font-size: clamp(0.88rem, calc(0.81rem + 0.34vw), 1.13rem);
+  font-size: var(--fs-s); }
+
+.bs {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: var(--bs); }
+
+.fs-l {
+  font-size: clamp(1.25rem, calc(1.05rem + 1.02vw), 2rem);
+  font-size: var(--fs-l);
+  font-weight: 800;
+  font-weight: var(--fw-b); }
+
+.fs-s {
+  font-size: clamp(0.88rem, calc(0.81rem + 0.34vw), 1.13rem);
+  font-size: var(--fs-s);
+  font-weight: 300;
+  font-weight: var(--fw-s); }
+
+.rel {
+  position: relative; }
+
+.abs {
+  position: absolute; }
+
+.cp {
+  cursor: pointer; }
+
+.g-0 {
+  --gap: 0px; }
+
+.flex, .flex-center, .flex-col, .flex-wrap {
+  display: flex;
+  gap: var(--gap, 15px); }
+
+.flex-center {
+  justify-content: center;
+  align-items: center; }
+
+.flex-col {
+  flex-direction: column; }
+
+.flex-wrap {
+  flex-wrap: wrap; }
+
+.justify-center {
+  justify-content: center; }
+
+.justify-between {
+  justify-content: space-between; }
+
+.items-center {
+  align-items: center; }

@@ -1,0 +1,40 @@
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #343a40;
+  color: white;
+  height: 70px;
+  padding: 0 20px; }
+  nav .brand {
+    font-weight: bold;
+    font-size: 1.8rem; }
+  nav ul {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 20px; }
+  nav li {
+    list-style-type: none;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid transparent; }
+    nav li.underline:hover {
+      border-bottom-color: #dc3545; }
+    nav li button {
+      padding: 10px 15px;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 15px; }
+    nav li .primary {
+      background-color: #dc3545;
+      border-color: #dc3545; }
+    nav li a {
+      color: white;
+      text-decoration: none; }

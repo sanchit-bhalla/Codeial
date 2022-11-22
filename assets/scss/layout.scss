@@ -1,4 +1,110 @@
+$vars: (
+  clr-nav-bg: #343a40,
+  clr-primary: #007bff,
+  clr-success: #28a745,
+  clr-danger: #dc3545,
+  clr-white: #fff,
+  clr-dark1: rgb(32, 35, 42),
+  clr-dark2: rgb(51, 55, 62),
+  c1: #333,
+  c2: #ccc,
+  c3: gray,
+
+  fw-s: 300,
+  fw-m: 500,
+  fw-b: 800,
+
+  fs-s: clamp(0.88rem, calc(0.81rem + 0.34vw), 1.13rem),
+  fs-n: clamp(1rem, calc(0.86rem + 0.68vw), 1.5rem),
+  fs-l: clamp(1.25rem, calc(1.05rem + 1.02vw), 2rem),
+  bs: 0 8px 16px 0 rgba(0, 0, 0, 0.2),
+);
+
+@mixin var($prop, $val) {
+  #{$prop}: map-get($vars, $val);
+  #{$prop}: var(--#{$val});
+}
+
+:root {
+  @each $prop, $val in $vars {
+    --#{$prop}: #{$val};
+  }
+
+  font-family: sans-serif;
+}
+
 body {
+  font-family: sans-serif;
   margin: 0;
-  // text-align: center;
+  padding: 0;
+
+  @include var(font-weight, fw-m);
+  @include var(font-size, fs-s);
+}
+
+.bs {
+  @include var(box-shadow, bs);
+}
+
+.fs-l {
+  @include var(font-size, fs-l);
+  @include var(font-weight, fw-b);
+}
+
+.fs-s {
+  @include var(font-size, fs-s);
+  @include var(font-weight, fw-s);
+}
+
+.rel {
+  position: relative;
+}
+
+.abs {
+  position: absolute;
+}
+
+.cp {
+  cursor: pointer;
+}
+
+.g-0 {
+  --gap: 0px;
+}
+
+%flex {
+  display: flex;
+  gap: var(--gap, 15px);
+}
+
+.flex {
+  @extend %flex;
+}
+
+.flex-center {
+  @extend %flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-col {
+  @extend %flex;
+  flex-direction: column;
+}
+
+.flex-wrap {
+  @extend %flex;
+  flex-wrap: wrap;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
 }
