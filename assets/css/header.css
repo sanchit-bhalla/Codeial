@@ -31,7 +31,8 @@ nav {
       padding: 10px 15px;
       border-radius: 6px;
       color: #fff;
-      font-size: 15px; }
+      font-size: 15px;
+      cursor: pointer; }
     nav li .primary {
       background-color: #dc3545;
       border-color: #dc3545; }

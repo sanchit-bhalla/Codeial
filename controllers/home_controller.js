@@ -1,11 +1,25 @@
+const Post = require("../models/post");
+
 module.exports.home = function (req, res) {
   // Cookies comes in as request but going back as response
-  console.log(req.cookies);
+  // console.log("cookies: ", req.cookies);
+  // res.cookie("userId", 25); // change cookie
 
-  // change cookie
-  res.cookie("userId", 25);
+  // By doing this, user in the Post is just the ObjectId of User. But to show the details of user we need to populate the user details of each post having that ObjectId
+  // Post.find({}, function (err, posts) {
+  //   return res.render("home", {
+  //     title: "Codeial | Home",
+  //     posts: posts,
+  //   });
+  // });
 
-  return res.render("home", {
-    title: "Home",
-  });
+  // Populate the user of each post
+  Post.find({})
+    .populate("user")
+    .exec(function (err, posts) {
+      return res.render("home", {
+        title: "Codeial | Home",
+        posts: posts,
+      });
+    });
 };
