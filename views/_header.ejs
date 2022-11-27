@@ -4,7 +4,9 @@
 
     <% if (locals.user) { %>
     <li class="underline"><a href="/"> Home </a></li>
-    <li class="underline"><a href="/users/profile"> Profile </a></li>
+    <li class="underline">
+      <a href="/users/profile/<%= user.id %>"> Profile </a>
+    </li>
     <% } %>
   </ul>
 

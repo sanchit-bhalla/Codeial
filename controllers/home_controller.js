@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const User = require("../models/user");
 
 module.exports.home = function (req, res) {
   // Cookies comes in as request but going back as response
@@ -23,9 +24,13 @@ module.exports.home = function (req, res) {
       },
     })
     .exec(function (err, posts) {
-      return res.render("home", {
-        title: "Codeial | Home",
-        posts: posts,
+      // Fetch all Users also
+      User.find({}, function (err, users) {
+        return res.render("home", {
+          title: "Codeial | Home",
+          posts: posts,
+          all_users: users,
+        });
       });
     });
 };
