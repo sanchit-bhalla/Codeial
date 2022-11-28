@@ -1,7 +1,7 @@
 const Post = require("../models/post");
 const User = require("../models/user");
 
-module.exports.home = function (req, res) {
+module.exports.home = async function (req, res) {
   // Cookies comes in as request but going back as response
   // console.log("cookies: ", req.cookies);
   // res.cookie("userId", 25); // change cookie
@@ -15,22 +15,56 @@ module.exports.home = function (req, res) {
   // });
 
   // Populate the user of each post
-  Post.find({})
-    .populate("user")
-    .populate({
-      path: "comments",
-      populate: {
-        path: "user",
-      },
-    })
-    .exec(function (err, posts) {
-      // Fetch all Users also
-      User.find({}, function (err, users) {
-        return res.render("home", {
-          title: "Codeial | Home",
-          posts: posts,
-          all_users: users,
-        });
+
+  // WAY 1 --> Problem Callback Hell
+  // Post.find({})
+  //   .populate("user")
+  //   .populate({
+  //     path: "comments",
+  //     populate: {
+  //       path: "user",
+  //     },
+  //   })
+  //   .exec(function (err, posts) {
+  //     // Fetch all Users also
+  //     User.find({}, function (err, users) {
+  //       return res.render("home", {
+  //         title: "Codeial | Home",
+  //         posts: posts,
+  //         all_users: users,
+  //       });
+  //     });
+  //   });
+
+  // Way 2 --> Using then
+  // Here then is not promise. It's just a function provided by mongoose
+  // Post.find({}).populate("user").then(function())
+
+  // Way 3 --> Using Promises
+  // let posts = Post.find({}).populate("user").exec();
+  // posts.then()
+
+  // Way4 --> Using Async Await
+  // Best way bcz code becomes more readable and cleaner
+  try {
+    let posts = await Post.find({})
+      .populate("user")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+        },
       });
+
+    let users = await User.find({});
+
+    return res.render("home", {
+      title: "Codeial | Home",
+      posts: posts,
+      all_users: users,
     });
+  } catch (err) {
+    console.log("Error: ", err);
+    return;
+  }
 };
