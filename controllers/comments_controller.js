@@ -18,11 +18,14 @@ module.exports.create = async function (req, res) {
       post.comments.push(comment); // It will automatically pushes comment's ObjectId to the post
       post.save(); // Whenever we update schema, we need to save that also
 
-      res.redirect("/");
+      req.flash("success", "Comment added successfully !");
+    } else {
+      req.flash("error", "Post not found !");
     }
   } catch (err) {
-    console.log("Error in creating a comment : ", err);
-    return;
+    req.flash("error", err);
+  } finally {
+    res.redirect("/");
   }
 };
 
@@ -43,12 +46,13 @@ module.exports.destroy = async function (req, res) {
         $pull: { comments: req.params.id },
       });
 
-      return res.redirect("back");
+      req.flash("success", "Comment deleted successfully !");
     } else {
-      return res.redirect("back");
+      req.flash("error", "You are not Authorized !");
     }
   } catch (err) {
-    console.log("Error in destroying a comment : ", err);
-    return;
+    req.flash("error", err);
+  } finally {
+    return res.redirect("back");
   }
 };

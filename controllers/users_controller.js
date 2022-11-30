@@ -19,9 +19,15 @@ module.exports.update = function (req, res) {
 
     // 2nd Way -->  Instead of {name: req.body.name, email: req.body.email}; we could write req.body
     User.findByIdAndUpdate(req.params.id, req.body, function (err, user) {
+      if (err) {
+        req.flash("error", err);
+      } else {
+        req.flash("success", "Updated Successfully");
+      }
       return res.redirect("back");
     });
   } else {
+    req.flash("error", "You are not Authorized !");
     return res.status(401).send("Unauthorized");
   }
 };
@@ -54,30 +60,30 @@ module.exports.signIn = function (req, res) {
 // get the sign up data
 module.exports.create = function (req, res) {
   if (req.body.password != req.body.confirm_password) {
+    req.flash("error", "password doesn't match with confirm password");
     return res.redirect("back"); // back to sign-up page
   }
 
   User.findOne({ email: req.body.email }, function (err, user) {
     if (err) {
-      console.log(
-        "Error in finding user while signing up, So we will create a new user. Err : ",
-        err
-      );
-      return;
+      req.flash("error", err);
+      return res.redirect("back");
     }
 
     // creating new user
     if (!user) {
       User.create(req.body, function (err, user) {
         if (err) {
-          console.log("Error in creatig user while signing up : ", err);
-          return;
+          req.flash("error", err);
+          return res.redirect("back");
         }
 
+        req.flash("success", "Signed Up successfully");
         return res.redirect("/users/sign-in");
       });
     } else {
       // User already exists
+      req.flash("error", "Already have an account");
       return res.redirect("back"); // back to sign-up page
     }
   });
@@ -86,6 +92,9 @@ module.exports.create = function (req, res) {
 // sign in and create a session for the user
 module.exports.createSession = function (req, res) {
   // when passport js authenticate the user, the control comes here and we will redirect user to the homepage
+
+  // set flash message
+  req.flash("success", "Logged In Successfully");
   return res.redirect("/");
 };
 
@@ -98,6 +107,7 @@ module.exports.destroySession = function (req, res) {
       return res.redirect("back");
     }
 
+    req.flash("success", "You have logged out!");
     return res.redirect("/"); // redirect to homepage
   });
 };
