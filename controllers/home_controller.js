@@ -46,8 +46,10 @@ module.exports.home = async function (req, res) {
 
   // Way4 --> Using Async Await
   // Best way bcz code becomes more readable and cleaner
+  // Also sort the post. Post which was created in end should be displayed on the top
   try {
     let posts = await Post.find({})
+      .sort("-createdAt")
       .populate("user")
       .populate({
         path: "comments",
