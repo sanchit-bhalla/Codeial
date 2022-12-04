@@ -18,14 +18,29 @@ module.exports.create = async function (req, res) {
       post.comments.push(comment); // It will automatically pushes comment's ObjectId to the post
       post.save(); // Whenever we update schema, we need to save that also
 
+      // If it's AJAX request
+      if (req.xhr) {
+        // populate user name and post id so that we can send the user details also in ajax request
+        // NOTE: Do not send user's password
+        let populatedComment = await comment.populate("user", "email name");
+
+        return res.status(200).json({
+          data: {
+            comment: populatedComment,
+          },
+          message: "Comment created!",
+        });
+      }
+
       req.flash("success", "Comment added successfully !");
+      return res.redirect("back");
     } else {
       req.flash("error", "Post not found !");
+      return res.redirect("back");
     }
   } catch (err) {
     req.flash("error", err);
-  } finally {
-    res.redirect("/");
+    return res.redirect("back");
   }
 };
 
@@ -46,13 +61,22 @@ module.exports.destroy = async function (req, res) {
         $pull: { comments: req.params.id },
       });
 
+      if (req.xhr) {
+        return res.status(200).json({
+          data: {
+            message: "Comment Deleted !",
+          },
+        });
+      }
+
       req.flash("success", "Comment deleted successfully !");
+      return res.redirect("back");
     } else {
       req.flash("error", "You are not Authorized !");
+      return res.redirect("back");
     }
   } catch (err) {
     req.flash("error", err);
-  } finally {
     return res.redirect("back");
   }
 };
