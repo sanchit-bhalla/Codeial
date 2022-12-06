@@ -10,8 +10,10 @@ module.exports.profile = function (req, res) {
   });
 };
 
-module.exports.update = function (req, res) {
+module.exports.update = async function (req, res) {
   // If logged In user tries to update his own profile, only then it is possible
+  /*
+  // Approach => Using Callback Functions 
   if (req.user.id == req.params.id) {
     // User.findByIdAndUpdate(req.params.id, {name: req.body.name, email: req.body.email}, function(err, user){
     //   ...
@@ -26,6 +28,38 @@ module.exports.update = function (req, res) {
       }
       return res.redirect("back");
     });
+  } else {
+    req.flash("error", "You are not Authorized !");
+    return res.status(401).send("Unauthorized");
+  }
+  */
+
+  // Using Async Await
+  if (req.user.id == req.params.id) {
+    try {
+      let user = await User.findById(req.params.id);
+
+      // We can't get data as we got in above approach bcz now it is multipart/ form data and our parser can't parse it.
+      // So we need to use multer
+      User.uploadedAvatar(req, res, function (err) {
+        if (err) {
+          console.log("**Multer Error: ", err);
+        }
+
+        user.name = req.body.name;
+        user.email = req.body.email;
+
+        if (req.file) {
+          // this is saving the path of the uploaded file in the avatar field of the user
+          user.avatar = User.avatarPath + "/" + req.file.filename;
+        }
+        user.save();
+        return res.redirect("back");
+      });
+    } catch (err) {
+      req.flash("error", err);
+      return res.redirect("back");
+    }
   } else {
     req.flash("error", "You are not Authorized !");
     return res.status(401).send("Unauthorized");
