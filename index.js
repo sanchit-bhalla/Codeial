@@ -39,6 +39,10 @@ app.use(express.urlencoded({ extended: true }));
 // Set Path of static files folder(asset)
 app.use(express.static("assets")); // now use relative path for static file(/css/layout.css, ...). eg in layout.ejs
 
+// To fetch profile image, we need to provide route to the path
+// Makes the upload path available to the browser
+app.use("/uploads", express.static(__dirname + "/uploads"));
+
 app.use(expressLayouts);
 // extract style and scripts from sub pages into the layout
 app.set("layout extractStyles", true);

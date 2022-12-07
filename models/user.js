@@ -38,7 +38,7 @@ let storage = multer.diskStorage({
   filename: function (req, file, cb) {
     // adding uniqueSuffix so that each stored file will be of different name like 'avatar-1670300809642-215498859'
     // file.fieldname => avatar
-    // Date.now() => Time in millis - ?
+    // Date.now() => returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, file.fieldname + "-" + uniqueSuffix);
   },
