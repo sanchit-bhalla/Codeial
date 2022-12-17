@@ -30,4 +30,14 @@ router.post(
 
 router.get("/sign-out", usersController.destroySession);
 
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+); // After google authenticates, it provides the data at the callback url .../auth/google/callback
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/users/sign-in" }),
+  usersController.createSession
+);
+
 module.exports = router;
