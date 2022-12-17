@@ -9,6 +9,7 @@ const db = require("./config/mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocal = require("./config/passport-local-strategy");
+const passportJWT = require("./config/passport-jwt-strategy");
 // Right now whenever server restarts, our session cookie gets reset. This is bad bcz whenever we deploy some new code to the production server, all the users gets logged out.
 // Solution :  Keep persistent storage which keeps our cookies stored in the server.
 // For this we will be using libraray called connect-mongo.

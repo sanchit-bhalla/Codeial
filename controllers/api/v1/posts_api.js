@@ -27,19 +27,20 @@ module.exports.destroy = async function (req, res) {
     // check whether logged In user and the user who write this post are same or not
     // post.user refers the object Id of user until we populate it(as we did in home_controller)
     // We should compare with string form of objectId
-    // if (post.user == req.user.id) {
-    //.id means converting the ObjectId into String --> provided by mongoose
-    post.remove();
+    if (post.user == req.user.id) {
+      //.id means converting the ObjectId into String --> provided by mongoose
+      post.remove();
 
-    await Comment.deleteMany({ post: req.params.id });
+      await Comment.deleteMany({ post: req.params.id });
 
-    return res.json(200, {
-      message: "Post and associated comments deleted successfully!",
-    });
-    // } else {
-    //   req.flash("error", "You are Not Authorized !");
-    //   return res.redirect("back");
-    // }
+      return res.status(200).json({
+        message: "Post and associated comments deleted successfully!",
+      });
+    } else {
+      res.status(401).json({
+        message: "You cannot delete this post!",
+      });
+    }
   } catch (err) {
     // req.flash("error", err);
     // return res.redirect("back");
