@@ -1,5 +1,8 @@
 const Comment = require("../models/comment");
 const Post = require("../models/post");
+const commentsMailer = require("../mailers/comments_mailer");
+const queue = require("../config/kue");
+const commmentEmailWorker = require("../worker/comment_email_worker");
 
 module.exports.create = async function (req, res) {
   try {
@@ -18,12 +21,27 @@ module.exports.create = async function (req, res) {
       post.comments.push(comment); // It will automatically pushes comment's ObjectId to the post
       post.save(); // Whenever we update schema, we need to save that also
 
+      // populate user name and post id so that we can send the user details also in ajax request
+      // NOTE: Do not send user's password
+      let populatedComment = await comment.populate("user", "email name");
+
+      // Sending mail
+      // WAY 1 : It will try to send immediately and will increase load on CPU. However we can send email after some time also i.e as a delayed job
+      // commentsMailer.newComment(populatedComment);
+
+      // WAY2: Send as delayed job
+      // If queue not present it will create new queue else enquee in previous queue
+      let job = queue.create("emails", populatedComment).save(function (err) {
+        if (err) {
+          console.log("Error in creating a queue", err);
+          return;
+        }
+
+        console.log("job enqueued", job.id);
+      });
+
       // If it's AJAX request
       if (req.xhr) {
-        // populate user name and post id so that we can send the user details also in ajax request
-        // NOTE: Do not send user's password
-        let populatedComment = await comment.populate("user", "email name");
-
         return res.status(200).json({
           data: {
             comment: populatedComment,
