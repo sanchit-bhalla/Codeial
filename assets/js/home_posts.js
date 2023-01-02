@@ -27,6 +27,9 @@
 
           // Adding Click handler to comments Form so that we will be able to use ajax there
           CreateComment(newPost);
+
+          // enable the functionality of the toggle like button on the new post
+          new ToggleLike($(" .toggle-like-button", newPost));
         },
         error: function (error) {
           console.log(error.responseText);
@@ -46,8 +49,17 @@
                   </small>
                   
                   ${post.content}
-                  <br />
+                  <br>
                   <small> ${post.user.name} </small>
+
+                  <br>
+
+                  <small>
+                    <a class="toggle-like-button" data-likes="0" href="/likes/toggle/?id=${post._id}&type=Post">
+                      0 Likes
+                    </a>                  
+                  </small>
+
                 </p>
               
                 <div id="post-comments">
@@ -117,6 +129,9 @@
           // $(' .delete-comment-form', newComment) finds the element with class delete-post-button inside the object newComment.
           deleteComment($(" .delete-comment-button", newComment));
           // NOTE : there must be space before .delete-comment-form
+
+          // enable the functionality of the toggle like button on the new comment
+          new ToggleLike($(" .toggle-like-button", newComment));
         },
         error: function (error) {
           console.log(error.responseText);
@@ -134,8 +149,15 @@
         <a class="delete-comment-button" href="/comments/destroy/${comment._id}">X</a>
       </small>
       ${comment.content}
-      <br />
+      <br>
       <small>${comment.user.name}</small>
+
+      <small>
+        <a class="toggle-like-button" data-likes="0" href="/likes/toggle/?id=${comment._id}&type=Comment">
+          0 Likes
+        </a>
+      </small>
+
     </p>
   </li>`);
   };

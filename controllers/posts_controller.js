@@ -1,5 +1,6 @@
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const Like = require("../models/like");
 
 module.exports.create = async function (req, res) {
   try {
@@ -40,6 +41,11 @@ module.exports.destroy = async function (req, res) {
     // We should compare with string form of objectId
     if (post.user == req.user.id) {
       //.id means converting the ObjectId into String --> provided by mongoose
+
+      // delete Likes which are associated to this Post and the likes which are associated to comments of this post
+      await Like.deleteMany({ likeable: post, onModel: "Post" });
+      await Like.deleteMany({ _id: { $in: post.comments } });
+
       post.remove();
 
       await Comment.deleteMany({ post: req.params.id });

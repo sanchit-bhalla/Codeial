@@ -55,9 +55,11 @@ module.exports.home = async function (req, res) {
         path: "comments",
         options: { sort: { createdAt: -1 } }, // sort comments according to latest date
         populate: {
-          path: "user",
+          path: "user likes",
+          options: { _recursed: true },
         },
-      });
+      })
+      .populate("likes");
 
     let users = await User.find({});
 
